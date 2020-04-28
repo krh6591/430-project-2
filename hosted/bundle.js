@@ -99,7 +99,7 @@ var randomizeCanvas = function randomizeCanvas(ctx) {
     var rowStr = '';
 
     for (var x = 0; x < 32; ++x) {
-      var pixStr = Math.floor(Math.random() * 3 + 1).toString(16) + Math.floor(Math.random() * 3 + 1).toString(16) + Math.floor(Math.random() * 3 + 1).toString(16);
+      var pixStr = Math.floor(Math.random() * 2 + 2).toString(16) + Math.floor(Math.random() * 2 + 2).toString(16) + Math.floor(Math.random() * 2 + 2).toString(16);
       rowStr += pixStr;
       ctx.fillStyle = '#' + pixStr;
       ctx.fillRect(x, y, 1, 1);
@@ -125,7 +125,7 @@ var setup = function setup(csrf) {
     var origin = canvas.getBoundingClientRect();
     var x = Math.floor((e.clientX - origin.left) / 16);
     var y = Math.floor((e.clientY - origin.top) / 16);
-    var pixStr = Math.floor(Math.random() * 3 + 11).toString(16) + Math.floor(Math.random() * 3 + 11).toString(16) + Math.floor(Math.random() * 3 + 11).toString(16);
+    var pixStr = Math.floor(Math.random() * 3 + 10).toString(16) + Math.floor(Math.random() * 3 + 10).toString(16) + Math.floor(Math.random() * 3 + 10).toString(16);
     pixtStr = pixtStr.substr(0, y * 96 + x * 3) + pixStr + pixtStr.substr(y * 96 + x * 3 + 3);
     ctx.fillStyle = '#' + pixStr;
     ctx.fillRect(x, y, 1, 1);

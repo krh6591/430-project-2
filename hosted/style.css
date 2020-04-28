@@ -1,7 +1,25 @@
-html, body {
+:root {
+  --color-base: #202428;
+  --color-main: #30363C;
+  --color-text: #D0D8E0;
+  --color-accent: #55EEAC;
+  --color-highlight: #66FFBD;
+}
+
+html {
     height: 100%;
     width: 100%;
     margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: var(--color-base);
+    font-family: 'Press Start 2P', cursive;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    margin: auto;
     padding: 0;
     overflow-x: hidden;
 }
@@ -9,12 +27,13 @@ html, body {
 nav {
     width: 100%;
     height: 50px;
-    background-color: #55eeac;
+    background-color: var(--color-accent);
 }
 
 img {
-    width: 128;
-    height: 128;
+    width: 80%;
+    height: 80%;
+    margin: auto;
     
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
@@ -22,36 +41,25 @@ img {
 }
 
 canvas {
-    width: 512;
-    height: 512;
-    background-color: #e8f8f0;
+    width: 60%;
+    height: auto;
   
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
 }
 
-.navlink {
-    padding: 5px;
-    padding-top: 12px;
-    padding-left: 20px;
-    color: white;
-    font-size: 1.3em;
-    float: left;
+br {
+  margin: 20px;
 }
 
-.navlink a, .navlink a:link, .navlink a:visited, .navlink a:hover, .navlink a:active {
-    color: white;
-    text-decoration: none;
-    padding: 5px;
-    border-radius: 4px;
-    background-color: #55eeac;
-    transition: background-color 0.4s ease;
-}
-
-.navlink a:hover {
-    transition: background-color 0.8s ease;
-    background-color: #66ffbd;
+#mainBody {
+    height: auto;
+    width: 60%;
+    margin: auto;
+    text-align: center;
+    background-color: var(--color-main);
+    color: var(--color-text);
 }
 
 #user, #pass, #pass2 {
@@ -59,4 +67,33 @@ canvas {
     font-size: 1.1em;
     width: 180px;
     border-radius: 6px;
+}
+
+.pixt {
+    display: inline-block;
+    width: 256px;
+    height: 256px;
+}
+
+.navlink {
+    padding: 5px;
+    padding-top: 12px;
+    padding-left: 20px;
+    color: var(--color-base);
+    font-size: 1.3em;
+    float: left;
+}
+
+.navlink a, .navlink a:link, .navlink a:visited, .navlink a:hover, .navlink a:active {
+    color: var(--color-base);
+    text-decoration: none;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: var(--color-accent);
+    transition: background-color 0.25s ease;
+}
+
+.navlink a:hover {
+    transition: background-color 0.25s ease;
+    background-color: var(--color-highlight);
 }

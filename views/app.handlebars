@@ -8,6 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="shortcut icon" href="/assets/img/favicon.png"/>
   <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
 </head>
@@ -17,14 +18,21 @@
     <div class="navlink"><a href="/logout">Log out</a></div>
   </nav>
   
-  <canvas id="pixtCanvas" width="32" height="32"></canvas>
-  <section id="makePixt">
-  </section>
+  <div id="mainBody">
+    <br>
+    <canvas id="pixtCanvas" width="32" height="32"></canvas>
+    <br>
+    
+    <section id="makePixt">
+    </section>
   
-  <section id="pixts">
-  </section>
+    <br>
   
-  <h3><span id="errorMessage"></span></h3>
+    <section id="pixts">
+    </section>
+  
+    <h3><span id="errorMessage"></span></h3>
+  </div>
   
   <script src="/assets/bundle.js"></script>
 </body>

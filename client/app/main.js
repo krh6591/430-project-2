@@ -96,9 +96,9 @@ const randomizeCanvas = function(ctx) {
     let rowStr = '';
     for (let x = 0; x < 32; ++x) {
     
-      let pixStr = Math.floor(Math.random() * 3 + 1).toString(16) + 
-                   Math.floor(Math.random() * 3 + 1).toString(16) +
-                   Math.floor(Math.random() * 3 + 1).toString(16);
+      let pixStr = Math.floor(Math.random() * 2 + 2).toString(16) + 
+                   Math.floor(Math.random() * 2 + 2).toString(16) +
+                   Math.floor(Math.random() * 2 + 2).toString(16);
                 
       rowStr += pixStr;
       
@@ -129,9 +129,9 @@ const setup = function(csrf) {
     let x = Math.floor((e.clientX - origin.left) / 16);
     let y = Math.floor((e.clientY - origin.top) / 16);
 
-    let pixStr = Math.floor(Math.random() * 3 + 11).toString(16) + 
-                 Math.floor(Math.random() * 3 + 11).toString(16) +
-                 Math.floor(Math.random() * 3 + 11).toString(16);
+    let pixStr = Math.floor(Math.random() * 3 + 10).toString(16) + 
+                 Math.floor(Math.random() * 3 + 10).toString(16) +
+                 Math.floor(Math.random() * 3 + 10).toString(16);
                  
     pixtStr = pixtStr.substr(0, y * 96 + x * 3) + pixStr + pixtStr.substr(y * 96 + x * 3 + 3);
     

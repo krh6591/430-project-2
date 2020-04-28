@@ -38,21 +38,21 @@ var LoginWindow = function LoginWindow(props) {
       action: "/login",
       method: "POST",
       className: "mainForm"
-    }, /*#__PURE__*/React.createElement("label", {
+    }, /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
       htmlFor: "username"
     }, "Username: "), /*#__PURE__*/React.createElement("input", {
       id: "user",
       type: "text",
       name: "username",
       placeholder: "username"
-    }), /*#__PURE__*/React.createElement("label", {
+    }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
       htmlFor: "pass"
     }, "Password: "), /*#__PURE__*/React.createElement("input", {
       id: "pass",
       type: "password",
       name: "pass",
       placeholder: "password"
-    }), /*#__PURE__*/React.createElement("input", {
+    }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
       type: "hidden",
       name: "_csrf",
       value: props.csrf
@@ -72,28 +72,28 @@ var SignupWindow = function SignupWindow(props) {
       action: "/signup",
       method: "POST",
       className: "mainForm"
-    }, /*#__PURE__*/React.createElement("label", {
+    }, /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
       htmlFor: "username"
     }, "Username: "), /*#__PURE__*/React.createElement("input", {
       id: "user",
       type: "text",
       name: "username",
       placeholder: "username"
-    }), /*#__PURE__*/React.createElement("label", {
+    }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
       htmlFor: "pass"
     }, "Password: "), /*#__PURE__*/React.createElement("input", {
       id: "pass",
       type: "password",
       name: "pass",
       placeholder: "password"
-    }), /*#__PURE__*/React.createElement("label", {
+    }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
       htmlFor: "pass2"
     }, "Password: "), /*#__PURE__*/React.createElement("input", {
       id: "pass2",
       type: "password",
       name: "pass2",
       placeholder: "password"
-    }), /*#__PURE__*/React.createElement("input", {
+    }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
       type: "hidden",
       name: "_csrf",
       value: props.csrf
