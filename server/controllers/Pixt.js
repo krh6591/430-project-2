@@ -46,12 +46,6 @@ const createPixt = (req, res) => {
 
 const getPixts = (request, response) => {
   const res = response;
-  
-  console.log(request.session);
-  
-  const search = {
-    _id: request.session._id
-  };
 
   return Pixt.PixtModel.findAll((err, docs) => {
     if (err) {
