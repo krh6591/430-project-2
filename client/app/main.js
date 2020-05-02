@@ -1,22 +1,46 @@
 // String representing the actively-edited Pixt canvas
 let pixtStr = '';
+let ckey = '';
 
+// Fetch and render the Pixt sections
 const loadPixts = () => {
-  sendAjax('GET', '/getPixts', null, (data) => {
-    ReactDOM.render(
-      <PixtList pixts={data.pixts} />, document.querySelector("#pixts")
-    );
+  // Current user favorites (and other nice data)
+  sendAjax('GET', '/getFavorites', null, (favs) => {
+    // All users (for matching owners to usernames)
+    sendAjax('GET', '/getUsers', null, (users) => {
+      // All pixts (For filtering and displaying)
+      sendAjax('GET', '/getPixts', null, (dat) => {
+        let favorites = favs.favorites;
+        let data = dat;
+      
+        // Cross-reference and update Pixts with users and favorites
+        for (let i = 0; i < data.pixts.length; ++i) {
+          data.pixts[i].creator = 'NO CREATOR';
+          data.pixts[i].favClass = favorites.includes(data.pixts[i]._id) ?
+                                                                        'favorited' : 'unfavorited';
+        
+          for (let j = 0; j < users.users.length; ++j) {
+            if (data.pixts[i].owner === users.users[j]._id) {
+              data.pixts[i].creator = users.users[j].username;
+            }
+          }
+        }
+        // Render all Pixts
+        ReactDOM.render(
+          <PixtList pixts={data.pixts} />, document.querySelector("#pixts")
+        );
+      });
+    });
   });
 };
 
+// Pull the canvas data and upload as a new Pixt
 const createPixt = (e) => {
   e.preventDefault();
   
   // Serialize the form and setup the data
   let pixtArray = $("#pixtForm").serializeArray();
   let pixtData = {};
-  
-  console.log(pixtArray);
   
   for (let i = 0; i < pixtArray.length; ++i) {
     pixtData[pixtArray[i].name] = pixtArray[i].value;
@@ -30,7 +54,22 @@ const createPixt = (e) => {
   return false;
 };
 
+// Favorite / un-favorite a Pixt
+const favPixt = (e) => {
+  const pixtID = e.target.nextSibling.innerText;
+  const toFav = e.target.classList.contains("unfavorited");
+  const newClass = toFav ? 'favorited' : 'unfavorited';
 
+  sendAjax('POST', '/favorite', { pixtID: pixtID, toFav: toFav, _csrf: ckey }, () => {
+  });
+  
+  sendAjax('POST', '/favPixt', { pixtID: pixtID, toFav: toFav,  _csrf: ckey }, () => {
+  });
+  
+  e.target.className = newClass;
+};
+
+// Form for creating a Pixt (just a button, canvas section does most of the heavy lifting)
 const PixtForm = (props) => {
   return (
     <form id="pixtForm"
@@ -75,10 +114,14 @@ const PixtList = function(props) {
       }
     }
     let dataURL = canvas.toDataURL();
+    let favString = '<3 ' + pixt.favorites;
     
     return (
       <div key={pixt._id} className="pixt">
         <img src={dataURL} alt="pixt" className="pixtImage" />
+        <p>{pixt.creator}</p>
+        <p className={pixt.favClass} onClick={favPixt}>{favString}</p>
+        <span hidden>{pixt._id}</span>
       </div>
     );
   });
@@ -90,12 +133,13 @@ const PixtList = function(props) {
   );
 };
 
+// Give the canvas a nice interesting starting base
 const randomizeCanvas = function(ctx) {
   pixtStr = '';
   for (let y = 0; y < 32; ++y) {
     let rowStr = '';
     for (let x = 0; x < 32; ++x) {
-    
+      // Give each channel a value from 2-4 (single-character hex)
       let pixStr = Math.floor(Math.random() * 2 + 2).toString(16) + 
                    Math.floor(Math.random() * 2 + 2).toString(16) +
                    Math.floor(Math.random() * 2 + 2).toString(16);
@@ -109,16 +153,20 @@ const randomizeCanvas = function(ctx) {
   }
 }
 
+// Initialization
 const setup = function(csrf) {
+  // Render Pixt creation form
   ReactDOM.render(
     <PixtForm csrf={csrf} />, document.querySelector("#makePixt")
   );
   
+  // Render empty Pixts section on init
   ReactDOM.render(
     <PixtList pixts={[]} />, document.querySelector("#pixts")
   );
   
   loadPixts();
+  ckey = csrf;
   
   // Setup and randomize the canvas
   let canvas = document.querySelector("#pixtCanvas")
@@ -140,6 +188,7 @@ const setup = function(csrf) {
   });
 }
 
+// Fetch csrf token
 const getToken = () => {
   sendAjax('GET', '/getToken', null, (result) => {
     setup(result.csrfToken);

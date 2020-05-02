@@ -1,3 +1,4 @@
+// Check input validity and log the user in
 const handleLogin = (e) => {
   e.preventDefault();
   
@@ -6,13 +7,12 @@ const handleLogin = (e) => {
     return false;
   }
   
-  console.log($("input[name=_csrf]").val());
-  
   sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
   
   return false;
 };
 
+// Check input validity and create a user
 const handleSignup = (e) => {
   e.preventDefault();
   
@@ -31,6 +31,7 @@ const handleSignup = (e) => {
   return false;
 };
 
+// Form for logging in
 const LoginWindow = (props) => {
   return (
     <form id="loginForm"
@@ -53,6 +54,7 @@ const LoginWindow = (props) => {
   );
 };
 
+// Form for signing up
 const SignupWindow = (props) => {
   return (
     <form id="signupForm"
@@ -78,6 +80,7 @@ const SignupWindow = (props) => {
   );
 };
 
+// Render the login form
 const createLoginWindow = (csrf) => {
   ReactDOM.render(
     <LoginWindow csrf={csrf} />,
@@ -85,6 +88,7 @@ const createLoginWindow = (csrf) => {
   );
 };
 
+// Render the signup form
 const createSignupWindow = (csrf) => {
   ReactDOM.render(
     <SignupWindow csrf={csrf} />,
@@ -92,6 +96,7 @@ const createSignupWindow = (csrf) => {
   );
 };
 
+// Initialization
 const setup = (csrf) => {
   const loginButton = document.querySelector("#loginButton");
   const signupButton = document.querySelector("#signupButton");
@@ -111,6 +116,7 @@ const setup = (csrf) => {
   createLoginWindow(csrf);
 };
 
+// Fetch csrf token
 const getToken = () => {
   sendAjax('GET', '/getToken', null, (result) => {
     setup(result.csrfToken);

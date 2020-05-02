@@ -1,18 +1,17 @@
 "use strict";
 
-// String representing the actively-edited Pixt canvas
-var pixtStr = '';
 var ckey = '';
 
 var loadPixts = function loadPixts() {
   sendAjax('GET', '/getFavorites', null, function (favs) {
     sendAjax('GET', '/getUsers', null, function (users) {
       sendAjax('GET', '/getPixts', null, function (dat) {
+        var userID = favs.userID;
         var favorites = favs.favorites;
+        var premium = favs.premium;
         var data = dat;
-        console.log(users);
-        console.log(data);
         console.log(favs);
+        console.log(favs.premium);
 
         for (var i = 0; i < data.pixts.length; ++i) {
           data.pixts[i].creator = 'NO CREATOR';
@@ -25,30 +24,34 @@ var loadPixts = function loadPixts() {
           }
         }
 
+        var upList = [];
+        var fvList = []; // Filter all Pixts created and favorited by the user
+
+        for (var _i = 0; _i < data.pixts.length; ++_i) {
+          if (data.pixts[_i].owner === userID) {
+            upList.push(data.pixts[_i]);
+          }
+
+          if (favorites.includes(data.pixts[_i]._id)) {
+            fvList.push(data.pixts[_i]);
+          }
+        }
+
+        console.log(fvList);
         ReactDOM.render( /*#__PURE__*/React.createElement(PixtList, {
-          pixts: data.pixts
-        }), document.querySelector("#pixts"));
+          pixts: upList
+        }), document.querySelector("#uploads")); // Render favorites if premium, provide upgrade option if not
+
+        if (premium) {
+          ReactDOM.render( /*#__PURE__*/React.createElement(PixtList, {
+            pixts: fvList
+          }), document.querySelector("#favorites"));
+        } else {
+          ReactDOM.render( /*#__PURE__*/React.createElement(UpgradeForm, null), document.querySelector("#favorites"));
+        }
       });
     });
   });
-};
-
-var createPixt = function createPixt(e) {
-  e.preventDefault(); // Serialize the form and setup the data
-
-  var pixtArray = $("#pixtForm").serializeArray();
-  var pixtData = {};
-  console.log(pixtArray);
-
-  for (var i = 0; i < pixtArray.length; ++i) {
-    pixtData[pixtArray[i].name] = pixtArray[i].value;
-  }
-
-  pixtData.pixels = pixtStr;
-  sendAjax('POST', '/createPixt', pixtData, function () {
-    loadPixts();
-  });
-  return false;
 };
 
 var favPixt = function favPixt(e) {
@@ -68,22 +71,87 @@ var favPixt = function favPixt(e) {
   e.target.className = newClass;
 };
 
-var PixtForm = function PixtForm(props) {
+var changePassword = function changePassword(e) {
+  e.preventDefault();
+
+  if ($("#pass").val() === '' || $("#pass2").val() === '') {
+    handleError("Missing Password");
+    return false;
+  }
+
+  if ($("#pass").val() !== $("#pass2").val()) {
+    handleError("Passwords Don't Match");
+    return false;
+  }
+
+  sendAjax('POST', '/changePassword', {
+    password: $("#pass").val(),
+    _csrf: ckey
+  }, function () {});
+  handleError("Password Changed");
+  return false;
+};
+
+var upgrade = function upgrade(e) {
+  e.preventDefault();
+  sendAjax('POST', '/upgrade', {
+    _csrf: ckey
+  }, function () {});
+  handleError("Welcome to Premium");
+  loadPixts();
+  return false;
+};
+
+var PasswordForm = function PasswordForm(props) {
   return (/*#__PURE__*/React.createElement("form", {
-      id: "pixtForm",
-      name: "pixtForm",
-      onSubmit: createPixt,
-      action: "/createPixt",
+      id: "pwForm",
+      name: "pwForm",
+      onSubmit: changePassword,
+      action: "/changePassword",
       method: "POST",
-      className: "pixtForm"
+      className: "pwForm"
+    }, /*#__PURE__*/React.createElement("label", {
+      htmlFor: "pass"
+    }, "Password: "), /*#__PURE__*/React.createElement("input", {
+      id: "pass",
+      type: "password",
+      name: "pass",
+      placeholder: "password"
+    }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
+      htmlFor: "pass2"
+    }, "Password: "), /*#__PURE__*/React.createElement("input", {
+      id: "pass2",
+      type: "password",
+      name: "pass2",
+      placeholder: "password"
+    }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
+      type: "hidden",
+      name: "_csrf",
+      value: props.csrf
+    }), /*#__PURE__*/React.createElement("input", {
+      className: "changePasswordSubmit",
+      type: "submit",
+      value: "Change Password"
+    }))
+  );
+};
+
+var UpgradeForm = function UpgradeForm(props) {
+  return (/*#__PURE__*/React.createElement("form", {
+      id: "upForm",
+      name: "upForm",
+      onSubmit: upgrade,
+      action: "/upgrade",
+      method: "POST",
+      className: "upForm"
     }, /*#__PURE__*/React.createElement("input", {
       type: "hidden",
       name: "_csrf",
       value: props.csrf
     }), /*#__PURE__*/React.createElement("input", {
-      className: "makePixtSubmit",
+      className: "upgradeSubmit",
       type: "submit",
-      value: "Create Pixt"
+      value: "Get Premium"
     }))
   );
 }; // Render Pixts
@@ -137,45 +205,18 @@ var PixtList = function PixtList(props) {
   );
 };
 
-var randomizeCanvas = function randomizeCanvas(ctx) {
-  pixtStr = '';
-
-  for (var y = 0; y < 32; ++y) {
-    var rowStr = '';
-
-    for (var x = 0; x < 32; ++x) {
-      var pixStr = Math.floor(Math.random() * 2 + 2).toString(16) + Math.floor(Math.random() * 2 + 2).toString(16) + Math.floor(Math.random() * 2 + 2).toString(16);
-      rowStr += pixStr;
-      ctx.fillStyle = '#' + pixStr;
-      ctx.fillRect(x, y, 1, 1);
-    }
-
-    pixtStr += rowStr;
-  }
-};
-
 var setup = function setup(csrf) {
-  ReactDOM.render( /*#__PURE__*/React.createElement(PixtForm, {
+  ReactDOM.render( /*#__PURE__*/React.createElement(PasswordForm, {
     csrf: csrf
-  }), document.querySelector("#makePixt"));
+  }), document.querySelector("#pwchange"));
   ReactDOM.render( /*#__PURE__*/React.createElement(PixtList, {
     pixts: []
-  }), document.querySelector("#pixts"));
+  }), document.querySelector("#favorites"));
+  ReactDOM.render( /*#__PURE__*/React.createElement(PixtList, {
+    pixts: []
+  }), document.querySelector("#uploads"));
   loadPixts();
-  ckey = csrf; // Setup and randomize the canvas
-
-  var canvas = document.querySelector("#pixtCanvas");
-  var ctx = canvas.getContext('2d');
-  randomizeCanvas(ctx);
-  canvas.addEventListener('mousedown', function (e) {
-    var origin = canvas.getBoundingClientRect();
-    var x = Math.floor((e.clientX - origin.left) / 16);
-    var y = Math.floor((e.clientY - origin.top) / 16);
-    var pixStr = Math.floor(Math.random() * 3 + 10).toString(16) + Math.floor(Math.random() * 3 + 10).toString(16) + Math.floor(Math.random() * 3 + 10).toString(16);
-    pixtStr = pixtStr.substr(0, y * 96 + x * 3) + pixStr + pixtStr.substr(y * 96 + x * 3 + 3);
-    ctx.fillStyle = '#' + pixStr;
-    ctx.fillRect(x, y, 1, 1);
-  });
+  ckey = csrf;
 };
 
 var getToken = function getToken() {

@@ -16,6 +16,10 @@ const AccountSchema = new mongoose.Schema({
     unique: true,
     match: /^[A-Za-z0-9_\-.]{1,16}$/,
   },
+  favorites: {
+    type: String,
+    default: '',
+  },
   salt: {
     type: Buffer,
     required: true,
@@ -23,6 +27,10 @@ const AccountSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  premium: {
+    type: Boolean,
+    default: false,
   },
   createdDate: {
     type: Date,
@@ -53,6 +61,39 @@ AccountSchema.statics.findByUsername = (name, callback) => {
   };
 
   return AccountModel.findOne(search, callback);
+};
+
+AccountSchema.statics.findUsers = (callback) => AccountModel.find().select('_id username').lean().exec(callback);
+
+// Fetches favorites (among other useful data) from a specified user
+AccountSchema.statics.findFavorites = (userID, callback) => {
+  const search = {
+    _id: userID,
+  };
+
+  AccountModel.findOne(search, (err, docc) => {
+    const doc = docc;
+    if (err) {
+      console.log(err);
+      return 0;
+    }
+
+    if (doc.favorites) {
+      return AccountModel.findOne(search).select('_id favorites premium').lean().exec(callback);
+    }
+
+    doc.favorites = '';
+    doc.save((errr) => {
+      if (errr) {
+        console.log(errr);
+        return 0;
+        // return response.status(400).json({ error: 'Error' });
+      }
+
+      return AccountModel.findOne(search).select('_id favorites premium').lean().exec(callback);
+    });
+    return 0;
+  });
 };
 
 AccountSchema.statics.generateHash = (password, callback) => {

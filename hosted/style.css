@@ -31,8 +31,8 @@ nav {
 }
 
 img {
-    width: 80%;
-    height: 80%;
+    width: 224px;
+    height: 224px;
     margin: auto;
     
     image-rendering: pixelated;
@@ -69,10 +69,18 @@ br {
     border-radius: 6px;
 }
 
+.favorited {
+    color: var(--color-accent);
+}
+
+.unfavorited {
+    color: var(--color-text);
+}
+
 .pixt {
     display: inline-block;
     width: 256px;
-    height: 256px;
+    height: 320px;
 }
 
 .navlink {

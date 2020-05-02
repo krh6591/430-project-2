@@ -14,6 +14,7 @@ const requiresLogout = (req, res, next) => {
   return next();
 };
 
+// Require https protocol
 const requiresSecure = (req, res, next) => {
   if (req.headers['x-forwarded-proto'] !== 'https') {
     return res.redirect(`https://${req.hostname}${req.url}`);
@@ -21,6 +22,7 @@ const requiresSecure = (req, res, next) => {
   return next();
 };
 
+// Skip https check
 const bypassSecure = (req, res, next) => {
   next();
 };

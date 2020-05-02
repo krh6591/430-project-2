@@ -1,11 +1,14 @@
+// Render the message in the special text zone
 const handleError = (message) => {
   $("#errorMessage").text(message);
 };
 
+// Send them somewhere else
 const redirect = (response) => {
   window.location = response.redirect;
 };
 
+// Send a request via ajax
 const sendAjax = (type, action, data, success) => {
   $.ajax({
     cache: false,

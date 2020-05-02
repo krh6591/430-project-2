@@ -2,7 +2,6 @@
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-// const _ = require('underscore');
 
 const convertId = mongoose.Types.ObjectId;
 
@@ -35,22 +34,15 @@ PixtSchema.statics.toAPI = (doc) => ({
 });
 
 // Values to get for every fetch
-const selectors = 'pixels favorites';
+const selectors = 'pixels favorites owner _id';
 
+// Fetch all uploaded Pixts
 PixtSchema.statics.findAll = (callback) => PixtModel.find().select(selectors).lean().exec(callback);
 
+// Fetch all uploaded Pixts from a specific owner
 PixtSchema.statics.findByOwner = (ownerId, callback) => {
   const search = {
     owner: convertId(ownerId),
-  };
-
-  return PixtModel.find(search).select(selectors).lean().exec(callback);
-};
-
-// Find all Pixts
-PixtSchema.statics.findByTeam = (team, callback) => {
-  const search = {
-    team,
   };
 
   return PixtModel.find(search).select(selectors).lean().exec(callback);
